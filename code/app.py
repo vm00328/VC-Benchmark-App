@@ -13,7 +13,7 @@ def load_benchmark_data():
 
 data = load_benchmark_data()
 
-st.sidebar.image("../static/ML_logo.png", use_container_width = True)
+st.sidebar.image("static/ML_logo.png", use_container_width = True)
 
 # UI components
 st.title("Fund Performance Benchmarking")
