@@ -2,14 +2,17 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
+import os
+print(os.getcwd())
+
 @st.cache_data
 def load_benchmark_data():
-    benchmark_data = pd.read_excel("preqin_vc_benchmark_data_2015_2016.xlsx", sheet_name = "Sheet1")
+    benchmark_data = pd.read_excel("../data/preqin_vc_benchmark_data_2015_2016.xlsx")
     return benchmark_data
 
 data = load_benchmark_data()
 
-st.sidebar.image("ML logo.png", use_container_width=True)
+st.sidebar.image("../static/ML logo.png", use_container_width = True)
 
 # UI components
 st.title("Fund Performance Benchmarking")
@@ -18,15 +21,15 @@ st.title("Fund Performance Benchmarking")
 st.sidebar.title("Fund Details")
 st.sidebar.info("Input your VC fund details to compare against industry benchmarks.")
 
-with st.sidebar.expander("🎯 Fund Details", expanded=True):
+with st.sidebar.expander("🎯 Fund Details", expanded = True):
     fund_name = st.text_input("Enter Fund Name")
-    vintage = st.selectbox("Select Vintage", options=[2015, 2016])
+    vintage = st.selectbox("Select Vintage", options = [2015, 2016])
 
 # Input fields for performance metrics
 with st.sidebar.expander("📊 Performance Metrics"):
-    net_irr = st.sidebar.number_input("Net IRR (%)", step=0.01)
-    net_tvpi = st.sidebar.number_input("Net TVPI (X)", min_value=0.0, step=0.01)
-    net_dpi = st.sidebar.number_input("Net DPI (X)", min_value=0.0, step=0.01)
+    net_irr = st.sidebar.number_input("Net IRR (%)", step = 0.01)
+    net_tvpi = st.sidebar.number_input("Net TVPI (X)", min_value = 0.0, step = 0.01)
+    net_dpi = st.sidebar.number_input("Net DPI (X)", min_value = 0.0, step = 0.01)
 
 if st.sidebar.button("Submit"):
     selected_vintage_col = vintage
