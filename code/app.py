@@ -2,20 +2,19 @@ import os
 import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
-st.set_page_config(layout = "wide")
-@st.cache_data
-def load_benchmark_data():
-    file_path = os.path.join(os.path.dirname(__file__), "../data/preqin_vc_benchmark_data_2015_2016.xlsx")
-    benchmark_data = pd.read_excel(file_path)
-    return benchmark_data
 
-data = load_benchmark_data()
+st.set_page_config(layout = "wide")
+
+@st.cache_data
+def load_benchmark_data(sheet_name):
+    file_path = os.path.join(os.path.dirname(__file__), "../data/preqin_vc_europe_us_2015_2016.xlsx")
+    benchmark_data = pd.read_excel(file_path, sheet_name = sheet_name)
+    return benchmark_data
 
 logo_path = os.path.join(os.path.dirname(__file__), "static/ML_logo.png")
 st.sidebar.image(logo_path, use_container_width = True)
 
 # UI components
-
 st.title("Fund Performance Benchmarking")
 
 # Input fields
@@ -25,14 +24,25 @@ st.sidebar.info("Input your VC fund details to compare against industry benchmar
 with st.sidebar.expander("🎯 Fund Details", expanded = True):
     fund_name = st.text_input("Enter Fund Name")
     vintage = st.selectbox("Select Vintage", options = [2015, 2016])
+    geography = st.selectbox("Fund Manager Location", options = ["Europe (25 funds)", "US (95 funds)", "Europe & US (120 funds)"])
 
 # Input fields for performance metrics
-with st.sidebar.expander("📊 Performance Metrics"):
-    net_irr = st.sidebar.number_input("Net IRR (%)", step = 0.01)
-    net_tvpi = st.sidebar.number_input("Net TVPI (X)", min_value = 0.0, step = 0.01)
-    net_dpi = st.sidebar.number_input("Net DPI (X)", min_value = 0.0, step = 0.01)
+with st.sidebar.expander("📊 Performance Metrics", expanded = True):
+    net_irr = st.number_input("Net IRR (%)", step = 0.01)
+    net_tvpi = st.number_input("Net TVPI (X)", min_value = 0.0, step = 0.01)
+    net_dpi = st.number_input("Net DPI (X)", min_value = 0.0, step = 0.01)
 
 if st.sidebar.button("Submit"):
+
+    # Map geography selection to the appropriate benchmark sheet
+    sheet_mapping = {
+        "Europe (25 funds)": "VC EU Benchmark",
+        "US (95 funds)": "VC US Benchmark",
+        "Europe & US (120 funds)": "VC EU & US Benchmark"
+    }
+
+    selected_sheet = sheet_mapping.get(geography)
+    data = load_benchmark_data(selected_sheet)
     selected_vintage_col = vintage
     
     # Rows for each metric
