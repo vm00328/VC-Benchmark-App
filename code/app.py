@@ -7,7 +7,7 @@ st.set_page_config(layout = "wide")
 
 @st.cache_data
 def load_benchmark_data(sheet_name):
-    file_path = os.path.join(os.path.dirname(__file__), "../data/preqin_vc_europe_us_2015_2016.xlsx")
+    file_path = os.path.join(os.path.dirname(__file__), "../data/benchmark_data.xlsx")
     benchmark_data = pd.read_excel(file_path, sheet_name = sheet_name)
     return benchmark_data
 
@@ -75,7 +75,7 @@ if st.sidebar.button("Submit"):
 
     for i, (metric_name, user_value) in enumerate(metrics.items()):
         row_labels = metric_rows[metric_name]
-        benchmark_values = data[data["Unnamed: 0"].isin(row_labels)][selected_vintage_col].values
+        benchmark_values = data[data["Metrics"].isin(row_labels)][selected_vintage_col].values
         
         categories = ["Top Decile (90%)", "Top Quartile (75%)", "Average", fund_name]
         values = list(benchmark_values) + [user_value]
