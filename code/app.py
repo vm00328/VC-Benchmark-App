@@ -7,7 +7,8 @@ print(os.getcwd())
 
 @st.cache_data
 def load_benchmark_data():
-    benchmark_data = pd.read_excel("../data/preqin_vc_benchmark_data_2015_2016.xlsx")
+    file_path = os.path.join(os.path.dirname(__file__), "../data/preqin_vc_benchmark_data_2015_2016.xlsx")
+    benchmark_data = pd.read_excel(file_path)
     return benchmark_data
 
 data = load_benchmark_data()
