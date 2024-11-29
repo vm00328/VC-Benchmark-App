@@ -1,10 +1,8 @@
-import streamlit as st
-import pandas as pd
-import plotly.graph_objects as go
-
 import os
-print(os.getcwd())
-
+import pandas as pd
+import streamlit as st
+import plotly.graph_objects as go
+st.set_page_config(layout = "wide")
 @st.cache_data
 def load_benchmark_data():
     file_path = os.path.join(os.path.dirname(__file__), "../data/preqin_vc_benchmark_data_2015_2016.xlsx")
@@ -17,6 +15,7 @@ logo_path = os.path.join(os.path.dirname(__file__), "static/ML_logo.png")
 st.sidebar.image(logo_path, use_container_width = True)
 
 # UI components
+
 st.title("Fund Performance Benchmarking")
 
 # Input fields
@@ -62,7 +61,9 @@ if st.sidebar.button("Submit"):
         "Net DPI (X)": net_dpi
     }
     
-    for metric_name, user_value in metrics.items():
+    col1, col2, col3 = st.columns(3)
+
+    for i, (metric_name, user_value) in enumerate(metrics.items()):
         row_labels = metric_rows[metric_name]
         benchmark_values = data[data["Unnamed: 0"].isin(row_labels)][selected_vintage_col].values
         
@@ -94,5 +95,26 @@ if st.sidebar.button("Submit"):
             xaxis = dict(showgrid = False),
             yaxis = dict(showgrid = True, gridcolor = 'lightgrey')
         )
-        
-        st.plotly_chart(fig)
+
+        # Assign each chart to a column
+        if i == 0:
+            col1.plotly_chart(fig, use_container_width=True)
+        elif i == 1:
+            col2.plotly_chart(fig, use_container_width=True)
+        elif i == 2:
+            col3.plotly_chart(fig, use_container_width=True)
+
+    # Footer Section
+    st.markdown("---")  # Horizontal line for separation
+
+    # Dynamic data insights
+    footer_text = f"""
+    <div style='text-align: center; font-size: 12px; color: grey; padding-top: 10px;'>
+        <b>Data Source:</b> Preqin | 
+        <b>Vintage Years Covered:</b> 2015 & 2016 | 
+        <b>Sector</b>: Sector-Agnostic | 
+        <b>Geography</b>: Europe & US<br>
+    </div>
+    """
+
+    st.markdown(footer_text, unsafe_allow_html = True)
